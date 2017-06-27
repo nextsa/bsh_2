@@ -7,10 +7,11 @@ struct ShipsPosition
     int x_coord = 0;
     int y_coord = 0;
     int size = 0;
-    int submarine = 4;
-    int destroyer = 3;
-    int cruisers = 2;
-    int battleship = 1;
+    int maxShipSize = 4;
+    int countSubmarine = 4;
+    int countDestroyer = 3;
+    int countCruisers = 2;
+    int countBattleship = 1;
 
 };
 

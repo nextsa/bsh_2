@@ -8,16 +8,21 @@ class Bot
 {
 public:
     Bot();
-    void placeShips();
+    void placeShips(Board& board);
+    bool tryPlaceEmpty(Board& board, int x, int y);
+    void placeShip(Board& board, int x, int y);
+    void countShips();
+
+
 private:
-    int maxShips = 10;
-    int x_coord = 0;
-    int y_coord = 0;
-    int size = 0;
-    int submarine = 0;
-    int destroyer = 0;
-    int cruiser = 0;
-    int battleship = 0;
+    int m_maxShips = 10;
+    int m_x = 0;
+    int m_y = 0;
+    int m_shipSize = 0;
+    int m_submarine = 0;
+    int m_destroyer = 0;
+    int m_cruiser = 0;
+    int m_battleship = 0;
 };
 
 #endif // BOT_H

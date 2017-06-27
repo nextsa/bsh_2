@@ -1,252 +1,111 @@
 #include "bot.h"
-#include <QDebug>
+#include <assert.h>
 Bot::Bot()
 {
 
 }
-void Bot::placeShips()
+
+bool Bot::tryPlaceEmpty(Board& board, int x, int y)
 {
-    Board board;
+    //border
+    if ((y + m_shipSize) > board.size)
+    {
+        return false;
+    }
+
+    for (int i = x - 1; i < x + m_shipSize + 1; i++)
+    {
+        for (int j = y - 1; j < y + 2; j++)
+        {
+            if ((i >= 0) && (i < board.size) && (j >= 0) && (j < board.size))
+            {
+                if (board.board[i][j] != board.emptyCell)
+                {
+//                    cout << "i = " << i << " j = " << j << endl;
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+
+}
+
+void Bot::placeShip(Board& board, int x, int y)
+{
+    for (int i = 0; i < m_shipSize; i++)
+    {
+        board.board[x][y + i] = board.shipCell;
+    }
+}
+
+void Bot::countShips()
+{
+    if ( m_shipSize == 1)
+    {
+        m_submarine++;
+    }
+    else if (m_shipSize == 2)
+    {
+        m_destroyer++;
+    }
+    else if (m_shipSize == 3)
+    {
+        m_cruiser++;
+    }
+    else if (m_shipSize == 4)
+    {
+        m_battleship++;
+    }
+    else
+    {
+        cout << "countShips():/n Error: bad ship type!" << endl;
+    }
+}
+
+
+void Bot::placeShips(Board& board)
+{
     ShipsPosition ship;
     srand (time(NULL));
 
-//    while ((submarine <= ship.submarine) && (destroyer <= ship.destroyer) && (cruiser <= ship.cruisers) && (battleship <= ship.battleship))
-    int s = 0;
-    while (s < maxShips)
+    while (true)
     {
-        x_coord = rand() % board.size;
-        y_coord = rand() % board.size;
-        size = rand() % 4;
-//    cout << x_coord << " " << y_coord << " " << size << endl;
+        m_x = rand() % board.size;
+        m_y = rand() % board.size;
+        m_shipSize = (rand() % 4) + 1;
 
-        if (size == 0)
+//        cout << "m_shipSize = " << m_shipSize << endl;
+
+        assert((m_x >= 0) && (m_x < board.size));
+        assert((m_y >= 0) && (m_y < board.size));
+        assert((m_shipSize >= 1) && (m_shipSize <= ship.maxShipSize));
+
+//        cout << m_x+1 << " " << m_y+1 << " Before try" << endl;
+
+        if (((m_submarine) == ship.countSubmarine) && (m_destroyer == ship.countDestroyer) && (m_cruiser == ship.countCruisers) && (m_battleship == ship.countBattleship))
         {
-            submarine++;
-        }
-        else if (size == 1)
-        {
-            destroyer++;
-        }
-        else if (size == 2)
-        {
-            cruiser++;
-        }
-        else
-        {
-            battleship++;
-        }
-        if ((submarine > ship.submarine) || (destroyer > ship.destroyer) || (cruiser > ship.cruisers) || (battleship > ship.battleship))
-        {
-             size = rand() % 4;
+            // кончились все корабли
+            break;
         }
 
-        if ((board.board[x_coord][y_coord] != board.shipCell) && (board.board[x_coord][y_coord] != board.waterShipCell))
+        if (((m_submarine) == ship.countSubmarine) || (m_destroyer == ship.countDestroyer) || (m_cruiser == ship.countCruisers) || (m_battleship == ship.countBattleship))
         {
-            for (int i = 0; i <= size; i++)
-            {
-                board.board[x_coord + i][y_coord] = board.shipCell; // s
+            m_shipSize = (rand() % 4) + 1;
 
-                board.board[x_coord + i][y_coord + 1] = board.waterShipCell; //  s|
-                board.board[x_coord + i][y_coord - 1] = board.waterShipCell; // |s
+            //кончились корабли данного типа
+//           return;
 
-                board.board[x_coord + i + 1][y_coord] = board.waterShipCell;  // down
-                board.board[x_coord - 1][y_coord] = board.waterShipCell;     // top
-                board.board[x_coord - 1][y_coord + 1] = board.waterShipCell; // top right
-                board.board[x_coord + i + 1][y_coord + 1] = board.waterShipCell; // down right
-                board.board[x_coord + i + 1][y_coord - 1] = board.waterShipCell; // down left
-                board.board[x_coord - 1][y_coord - 1] = board.waterShipCell;    // top left
-            }
-
-
-
+            continue;
         }
-        s++;
-        cout << submarine << " " << destroyer << " " << cruiser << " " << battleship << endl;
+
+        if (tryPlaceEmpty(board, m_x, m_y) == true)
+        {
+            placeShip(board, m_x, m_y);
+
+            countShips();
+        }
+
     }
-    board.printBoard();
 
 }
-
-    /*
-
-    int s = 0;
-    while (s < maxShips)
-    {
-        x_coord = rand() % board.size;
-        y_coord = rand() % board.size;
-        size = rand() % 4;
-        if (size == 0)
-        {
-            submarine++;
-        }
-        else if (size == 1)
-        {
-            destroyer++;
-        }
-        else if (size == 2)
-        {
-            cruiser++;
-        }
-        else
-        {
-            battleship++;
-        }
-        //      cout << x_coord << " " << y_coord << " " << size << endl;
- //       s++;
-
-        while ((submarine <= ship.submarine))
-        {
-             cout << submarine << " " << destroyer << " " << cruiser << " " << battleship << endl;
-
-             if (board.board[x_coord][y_coord] != board.shipCell)
-             {
-                 for (int i = 0; i <= size; i++)
-                 {
-                     board.board[x_coord + i][y_coord] = board.shipCell;
-                 }
-
-
-                 s++;
-             }
-        }
-    }
-        board.printBoard();
-
-}
-
-
-    int s = 0;
-    while (s < maxShips)
-    {
-        x_coord = rand() % board.size;
-        y_coord = rand() % board.size;
-        size = rand() % 4;
-
-        //      cout << x_coord << " " << y_coord << " " << size << endl;
- //       s++;
-
-
-        if ((submarine <= ship.submarine) && (destroyer <= ship.destroyer) && (cruiser <= ship.cruisers) && (battleship <= ship.battleship))
-        {
-             cout << submarine << " " << destroyer << " " << cruiser << " " << battleship << endl;
-
-             if (board.board[x_coord][y_coord] != board.shipCell)
-             {
-                 for (int i = 0; i <= size; i++)
-                 {
-                     board.board[x_coord + i][y_coord] = board.shipCell;
-                 }
-
-                if (size == 0)
-                {
-                    submarine++;
-                }
-                else if (size == 1)
-                {
-                    destroyer++;
-                }
-                else if (size == 2)
-                {
-                    cruiser++;
-                }
-                else
-                {
-                    battleship++;
-                }
-                 s++;
-             }
-        }
-    }
-
-*/
-/*
-    if ((submarine <= ship.submarine) && (destroyer <= ship.destroyer) && (cruiser <= ship.cruisers) && (battleship <= ship.battleship))
-    {
-        x_coord = rand() % board.size;
-        y_coord = rand() % board.size;
-        size = rand() % 4;
-        if (size == 0)
-        {
-            submarine++;
-        }
-        else if (size == 1)
-        {
-            destroyer++;
-        }
-        else if (size == 2)
-        {
-            cruiser++;
-        }
-        else
-        {
-            battleship++;
-        }
-
-              cout << submarine << " " << destroyer << " " << cruiser << " " << battleship << endl;
-
-             if (board.board[x_coord][y_coord] != board.shipCell)
-             {
-                 for (int i = 0; i <= size; i++)
-                 {
-                     board.board[x_coord + i][y_coord] = board.shipCell;
-                 }
-                // s++;
-             }
-        }
-
-
-*/
-
-
-
-
-        /*
-        size = rand() % 4;
-        if (size == 1)
-        {
-            submarine++;
-            if (submarine > ship.submarine)
-            {
-                size = rand() % 4;
-            }
-        }
-        else if (size == 2)
-        {
-            destroyer++;
-            if (destroyer > ship.destroyer)
-            {
-                size = rand() % 4;
-            }
-        }
-        else if (size == 3)
-        {
-            cruiser++;
-            if (cruiser > ship.cruisers)
-            {
-                size = rand() % 4;
-            }
-        }
-        else
-        {
-            battleship++;
-            if (battleship > ship.battleship)
-            {
-                size = rand() % 4;
-            }
-        }
-
-        if (board.board[x_coord][y_coord] != board.shipCell)
-        {
-            for (int i = 0; i < size; i++)
-            {
-                board.board[x_coord + i][y_coord] = board.shipCell;
-            }
-            s++;
-        }
-     }
-*/
-/*
-        board.printBoard();
-
-}*/
-

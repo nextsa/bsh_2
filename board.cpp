@@ -1,17 +1,14 @@
 #include "board.h"
 
 Board::Board()
-{}
-
-void Board::initializeBoard()
 {
-   for (int x = 0; x < size; x++)
-   {
-       for (int y = 0; y < size; y++)
-       {
-           board[x][y] = emptyCell;
-       }
-   }
+    for (int x = 0; x < size; x++)
+    {
+        for (int y = 0; y < size; y++)
+        {
+            board[x][y] = emptyCell;
+        }
+    }
 }
 
 void Board::printBoard()
@@ -30,9 +27,13 @@ void Board::printBoard()
             {
                 cout << setw(4) << "|";
             }
-            else if (i > 0)
+            else if ((i > 0) && (i != size))
             {
                 cout << " " << i << " |";
+            }
+            else if (i == 10)
+            {
+                cout << " " << i << "|";
             }
         }
         cout << endl;
@@ -48,7 +49,7 @@ void Board::printBoard()
                 }
                 else if (board[x][y] == shipCell)
                 {
-                    cout << " " << shipCell << " |";
+                    cout << " O |";
                 }
                 else if (board[x][y] == waterShipCell)
                 {
@@ -56,11 +57,11 @@ void Board::printBoard()
                 }
                 else if (board[x][y] == missedShot)
                 {
-                    cout << setw(4) << board[x][y] << "O |";
+                    cout << " . |";
                 }
                 else if (board[x][y] == rightShot)
                 {
-                    cout << setw(4) << board[x][y] << "X |";
+                    cout << " X |";
                 }
             }
             cout << endl;

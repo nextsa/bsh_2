@@ -12,10 +12,9 @@ int main(int argc, char *argv[])
     cout << "Your enemy's board: \n" << endl;
 
     Board board;
- //   board.printBoard();
     Bot bot;
-    bot.placeShips();
-
+    bot.placeShips(board);
+    board.printBoard();
 
     int x = 0;
     int y = 0;

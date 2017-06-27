@@ -4,7 +4,6 @@
 
 #include <iostream>
 #include <iomanip>
-#include "bot.h"
 using namespace std;
 
 
@@ -12,9 +11,8 @@ class Board
 {
 public:
     Board();
-    void initializeBoard();
     void printBoard();
-    int size = 10;
+    const int size = 10;
     int board[10][10] = { };
 
     const int emptyCell = 0;
